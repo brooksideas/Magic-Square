@@ -16,6 +16,8 @@ boardType::boardType(int boardSize)
         // set the size set 0 and board to null
         size = 0;
         //board is NULL by default so no need to set it to NULL here;
+        // EXIT_FAILURE
+        exit(1);
     }
     else
     {
@@ -26,7 +28,7 @@ boardType::boardType(int boardSize)
 
         // assign values of 0 to the allocated memory matrix
         vector<vector<int>> dynamicBoard(M, vector<int>(N, 0));
-        board = dynamicBoard; 
+        board = dynamicBoard;
     }
 }
 boardType::~boardType()
@@ -79,8 +81,6 @@ void boardType::setCell(int row, int column, int value)
     {
         board[row][column] = value;
     }
-    getCell(row, column);
-    printGrid();
 }
 // Return the Board Size
 const int boardType::getOrder()

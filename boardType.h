@@ -8,11 +8,11 @@ using namespace std;
 class boardType
 {
 private:
-  int size;
-  vector<vector<int>> board;
   static constexpr int BRD_SIZE_MIN = 3;
   static constexpr int BRD_SIZE_MAX = 30;
-
+protected:
+  int size;
+  vector<vector<int>> board;
 public:
   boardType();
   boardType(int);

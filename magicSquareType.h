@@ -2,14 +2,15 @@
 #define magicSquareType_h
 #include<string>
 #include<iostream> 
+#include "boardType.h"
+
 using namespace std;
-class magicSquareType
+class magicSquareType:public boardType
 { 
   private:
   string title;
   public:
-  magicSquareType();
-  magicSquareType(int);
+  magicSquareType(); 
   ~magicSquareType();
 
 magicSquareType(int, string);
