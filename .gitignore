@@ -1,2 +1,3 @@
-# Binaries for programs and plugins such as a.exe
+# Binaries for programs and plugins such as a.exe , magicSqr.o
 *.exe
+*.o
