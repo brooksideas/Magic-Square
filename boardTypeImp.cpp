@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include "boardType.h"
+#include "magicSquareType.h"
 
 using namespace std;
 
@@ -94,6 +95,9 @@ const void boardType::printGrid()
     const char *bold = "\033[1m";
     const char *unbold = "\033[0m";
     cout << bold << "CS 202 - Magic Squares" << endl;
+    cout << " Title: " << getTitle() << endl;
+    cout << " Magic Square, order: " << getOrder() << endl;
+    cout << " Magic Number: " << magicNumber() << unbold << endl;
 
     // print the created array
     int M = size;

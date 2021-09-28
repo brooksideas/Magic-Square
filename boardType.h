@@ -5,7 +5,7 @@
 #include <vector>
 
 using namespace std;
-class boardType
+class boardType:public magicSquareType
 {
 private:
   static constexpr int BRD_SIZE_MIN = 3;
