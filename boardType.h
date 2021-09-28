@@ -5,23 +5,26 @@
 #include <vector>
 
 using namespace std;
-class boardType:public magicSquareType
+class boardType
 {
 private:
   static constexpr int BRD_SIZE_MIN = 3;
   static constexpr int BRD_SIZE_MAX = 30;
+
 protected:
   int size;
   vector<vector<int>> board;
+
 public:
   boardType();
   boardType(int);
   ~boardType();
   void setCell(int, int, int);
-  const int getCell(int, int);
-  const int getOrder();
-  const void printGrid();
+  int getCell(int, int);
+  int getOrder() const;
+  void printGrid() const;
   bool checkSize(int);
-  bool validateBoard(int, int);
+  int validateBoard(int, int);
+  vector<vector<int>> getBoard();
 };
 #endif

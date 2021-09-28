@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string.h>
 #include <string>
+#define BOLDWHITE "\033[1m\033[37m" /* Bold White */
+#define WHITE "\033[37m"            /* White */
 #include "boardType.h"
 #include "magicSquareType.h"
 
@@ -8,15 +10,16 @@ using namespace std;
 
 magicSquareType::magicSquareType() {}
 magicSquareType::~magicSquareType() {}
-
+int boardSizeValue;
+vector<vector<int>> currentDynamicBoard;
 magicSquareType::magicSquareType(int boardSize, std::string boardTitle)
 {
     title = boardTitle;
-    boardType boardTypeObject;
-
-    //boardType boardTypeObject(boardSize);
-    // magicNumber();
-    // validateMagicSquare();
+    boardType boardTypeObject(boardSize);
+    boardSizeValue = boardTypeObject.getOrder(); // set the size to the global variable for easy access
+  
+    createMagicSquare();
+    printMagicSquare();
     setTitle(boardTitle);
 }
 // magicNumber =  size * size (board size squared) plus 1 divided by 2
@@ -24,20 +27,22 @@ magicSquareType::magicSquareType(int boardSize, std::string boardTitle)
 
 int magicSquareType::magicNumber() const
 {
-    boardType boardTypeObject;
-    int magicNumber, boardSize;
-    boardSize = boardTypeObject.getOrder();
-    boardSize = boardSize * boardSize; // board size squared
-    boardSize = boardSize + 1;         // add 1 to it
-    magicNumber = boardSize * 2;       // multiply the entire value by 2
+
+    int magicNumber;
+    double boardSize;
+    boardSize = boardSizeValue;
+    boardSize = boardSize * boardSize;        // board size squared
+    boardSize = boardSize + 1;                // add 1 to it
+    boardSize = boardSize / 2;                // divide the entire value by 2
+    magicNumber = boardSize * boardSizeValue; // multiply the entire value by board size
     return magicNumber;
 }
 
-bool magicSquareType::validateMagicSquare() const
+bool magicSquareType::validateMagicSquare()
 {
-    boardType boardTypeObject;
-    int boardSize = boardTypeObject.getOrder();
-    int columnSumHolder[boardSize];
+
+    int boardSize = boardSizeValue;
+    int *columnSumHolder = new int[boardSize];
     // go through the matrix and add all the element along the row
     // at the same time when going to a new row add all the columns and store it as
     // columnSumHolder[currentRowIndex] which we will compare once the row addition is completed
@@ -47,8 +52,8 @@ bool magicSquareType::validateMagicSquare() const
         int rowSum = 0;
         for (int j = 0; j < boardSize; j++)
         {
-            rowSum = rowSum + boardTypeObject.getCell(i, j);
-            columnSumHolder[j] = boardTypeObject.getCell(i, j) + columnSumHolder[j];
+            rowSum = rowSum + getCell(i, j);
+            columnSumHolder[j] = getCell(i, j) + columnSumHolder[j];
         }
         // if row level additions are not equal to the magic number return false
         if (rowSum != magicNumber())
@@ -84,12 +89,13 @@ void magicSquareType::setTitle(string currentTitle)
 void magicSquareType::clearMagicSquare()
 {
     // dynamically allocate memory of size `M × N`
-    int M = size;
-    const auto N = size;
+    int M = boardSizeValue;
+    const auto N = boardSizeValue;
     // assign values of 0 to the allocated memory matrix for boardType board value
     vector<vector<int>> dynamicBoard(M, vector<int>(N, 0));
     board = dynamicBoard;
-    title = "";
+    std::string emptyTitle = "";
+    setTitle(emptyTitle);
 }
 
 void magicSquareType::readMagicSquare()
@@ -106,24 +112,39 @@ void magicSquareType::readMagicSquare()
     }
 
     // read magic square using boardType getCell
-    int M = size;
-    const auto N = size;
+    int M = boardSizeValue;
+    const auto N = boardSizeValue;
     for (int i = 0; i < M; i++)
     {
 
         for (int j = 0; j < N; j++)
         {
-            // cout << "|   " << board[i][j] << "  |";
             getCell(i, j);
         }
     }
 }
-
 // printGrid using the base class boardType
 void magicSquareType::printMagicSquare() const
 {
-    boardType boardTypeObject;
-    boardTypeObject.printGrid();
+    const char *bold = BOLDWHITE;
+    const char *unbold = WHITE;
+    cout << bold << "CS 202 - Magic Squares" << endl;
+    cout << " Title: " << getTitle() << endl;
+    cout << " Magic Square, order: " << getOrder() << endl;
+    cout << " Magic Number: " << magicNumber() << unbold << endl;
+
+    // print the created array
+    int M = boardSizeValue;
+    const auto N = boardSizeValue;
+    for (int i = 0; i < M; i++)
+    {
+        cout << "---";
+        for (int j = 0; j < N; j++)
+        {
+            cout << "|   " << currentDynamicBoard[i][j] << "  |";
+        }
+        cout << endl;
+    }
 }
 
 void OddMagicSquare(vector<vector<int>> &matrix, int boardSize)
@@ -134,7 +155,6 @@ void OddMagicSquare(vector<vector<int>> &matrix, int boardSize)
     for (int k = 1; k <= nsqr; ++k)
     {
         matrix[i][j] = k;
-
         i--;
         j++;
 
@@ -151,6 +171,8 @@ void OddMagicSquare(vector<vector<int>> &matrix, int boardSize)
                 i += boardSize;
         }
     }
+ 
+    currentDynamicBoard = matrix;
 }
 
 // Doubly Even magic square
@@ -178,7 +200,9 @@ void DoublyEvenMagicSquare(vector<vector<int>> &matrix, int boardSize)
         {
             if (I[i][j] == J[i][j])
                 matrix[i][j] = boardSize * boardSize + 1 - matrix[i][j];
-        }
+        } 
+  
+    currentDynamicBoard = matrix;
 }
 
 // singly Even magic square
@@ -187,7 +211,13 @@ void SinglyEvenMagicSquare(vector<vector<int>> &matrix, int boardSize)
     int p = boardSize / 2;
 
     vector<vector<int>> M(p, vector<int>(p, 0));
-    //MagicSquare(M, p);
+    //after dividing the size send to the appropriate square builder or continue here
+    if (p % 2 == 1) //p is Odd
+        OddMagicSquare(M, p);
+    else                             //p is even
+        if (p % 4 == 0) //doubly even order
+        DoublyEvenMagicSquare(M, p);
+   
 
     int i, j, k;
 
@@ -219,7 +249,7 @@ void SinglyEvenMagicSquare(vector<vector<int>> &matrix, int boardSize)
 
     int temp;
     for (i = 1; i <= p; i++)
-        for (j = 1; j <= J.size(); j++)
+        for (j = 1; j <= (int)J.size(); j++)
         {
             temp = matrix[i - 1][J[j - 1] - 1];
             matrix[i - 1][J[j - 1] - 1] = matrix[i + p - 1][J[j - 1] - 1];
@@ -238,16 +268,22 @@ void SinglyEvenMagicSquare(vector<vector<int>> &matrix, int boardSize)
     temp = matrix[i + p][j];
     matrix[i + p][j] = matrix[i][j];
     matrix[i][j] = temp;
+ 
+    currentDynamicBoard = matrix;
 }
 
 // create the magic square based on the order provided
 void magicSquareType::createMagicSquare()
 {
-    if (size % 2 == 1) //size is Odd
-        OddMagicSquare(board, size);
-    else                   //size is even
-        if (size % 4 == 0) //doubly even order
-        DoublyEvenMagicSquare(board, size);
+    boardType boardTypeObject;
+    currentDynamicBoard = boardTypeObject.getBoard();
+    vector<vector<int>> matrix(boardSizeValue, vector<int>(boardSizeValue, 0));
+ 
+    if (boardSizeValue % 2 == 1) //boardSizeValue is Odd
+        OddMagicSquare(matrix, boardSizeValue);
+    else                             //boardSizeValue is even
+        if (boardSizeValue % 4 == 0) //doubly even order
+        DoublyEvenMagicSquare(matrix, boardSizeValue);
     else //singly even order
-        SinglyEvenMagicSquare(board, size);
+        SinglyEvenMagicSquare(matrix, boardSizeValue);
 }

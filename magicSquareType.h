@@ -18,10 +18,11 @@ public:
   void createMagicSquare();
   void printMagicSquare() const;
   void readMagicSquare();
-  bool validateMagicSquare() const;
+  bool validateMagicSquare();
   void clearMagicSquare();
   int magicNumber() const;
   string getTitle() const;
-  void setTitle(string);
+  void setTitle(string);  
+
 };
 #endif
