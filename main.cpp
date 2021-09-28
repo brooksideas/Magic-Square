@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "boardType.h"
 #include "magicSquareType.h"
 
@@ -11,7 +12,8 @@ int main(int argc, char **argv)
      int bSize = 0;
      cout << "Enter  the title of the Magic Square."
           << endl;
-     cin >> title;
+     getline(cin, title);
+     // cin >> title;
      cout << "Enter " << bSize << "x" << bSize << " Magic Square."
           << endl
           << endl;

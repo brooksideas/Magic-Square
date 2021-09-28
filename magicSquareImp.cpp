@@ -17,10 +17,9 @@ magicSquareType::magicSquareType(int boardSize, std::string boardTitle)
     title = boardTitle;
     boardType boardTypeObject(boardSize);
     boardSizeValue = boardTypeObject.getOrder(); // set the size to the global variable for easy access
-  
+    setTitle(title);
     createMagicSquare();
     printMagicSquare();
-    setTitle(boardTitle);
 }
 // magicNumber =  size * size (board size squared) plus 1 divided by 2
 // then multiply the above value by the size follows BODMAS rule
@@ -82,8 +81,9 @@ string magicSquareType::getTitle() const
 }
 
 void magicSquareType::setTitle(string currentTitle)
-{
-    title = currentTitle;
+{ 
+     
+        title = currentTitle;
 }
 
 void magicSquareType::clearMagicSquare()
